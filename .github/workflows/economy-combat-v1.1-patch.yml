@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-patch:
@@ -30,8 +30,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: miniapp/package-lock.json
 
       - name: Create immutable pre-patch backup
         shell: bash
@@ -51,9 +49,27 @@ jobs:
           python -m pip install pytest
           python -m pytest backend/tests/test_economy_v1_1.py -q
 
+      - name: Normalize npm lock registry
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('miniapp/package-lock.json')
+          content = path.read_text(encoding='utf-8')
+          private_prefix = 'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/'
+          public_prefix = 'https://registry.npmjs.org/'
+          updated = content.replace(private_prefix, public_prefix)
+          if updated == content:
+              print('package-lock registry already normalized')
+          else:
+              path.write_text(updated, encoding='utf-8')
+              print('package-lock registry normalized')
+          PY
+
       - name: Install frontend dependencies
         working-directory: miniapp
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Build frontend
         working-directory: miniapp
@@ -62,6 +78,21 @@ jobs:
       - name: Typecheck frontend
         working-directory: miniapp
         run: npx tsc --noEmit
+
+      - name: Commit normalized lockfile
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          if git diff --quiet -- miniapp/package-lock.json; then
+            echo "Lockfile already normalized"
+          else
+            git config user.name "yokai-v1.1-bot"
+            git config user.email "actions@github.com"
+            git add miniapp/package-lock.json
+            git commit -m "chore: normalize npm registry URLs [skip ci]"
+            git pull --rebase origin feature/economy-combat-v1.1
+            git push origin HEAD:feature/economy-combat-v1.1
+          fi
 
       - name: Build patch archive
         shell: bash
