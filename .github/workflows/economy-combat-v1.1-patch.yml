@@ -1,0 +1,96 @@
+name: Economy Combat V1.1 Patch
+
+on:
+  push:
+    branches:
+      - feature/economy-combat-v1.1
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/economy-combat-v1.1
+          fetch-depth: 0
+
+      - name: Create immutable pre-patch backup
+        shell: bash
+        run: |
+          git fetch origin main
+          git archive --format=zip --output=backup_yokai_last_working_2026-06-28.zip origin/main
+          sha256sum backup_yokai_last_working_2026-06-28.zip > backup_yokai_last_working_2026-06-28.zip.sha256
+
+      - name: Apply App.tsx integration
+        run: python tools/apply_economy_combat_v1_1.py
+
+      - name: Compile Python
+        run: python -m compileall bot backend tools
+
+      - name: Install frontend dependencies
+        working-directory: miniapp
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: miniapp
+        run: npm run build
+
+      - name: Typecheck frontend
+        working-directory: miniapp
+        run: npx tsc --noEmit
+
+      - name: Commit generated integration
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes"
+          else
+            git config user.name "yokai-v1.1-bot"
+            git config user.email "actions@github.com"
+            git add miniapp/src/App.tsx
+            git commit -m "feat: integrate economy combat v1.1 into battle runtime [skip ci]"
+            git push origin HEAD:feature/economy-combat-v1.1
+          fi
+
+      - name: Build patch archive
+        shell: bash
+        run: |
+          git fetch origin main feature/economy-combat-v1.1
+          git diff --name-only origin/main...origin/feature/economy-combat-v1.1 > patch-files.txt
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          files = [line.strip() for line in Path('patch-files.txt').read_text().splitlines() if line.strip()]
+          with zipfile.ZipFile('yokai_economy_combat_v1.1_patch.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+              for name in files:
+                  path = Path(name)
+                  if path.is_file() and '.github/workflows' not in name:
+                      archive.write(path, name)
+              archive.writestr('PATCH_FILE_LIST.txt', '\n'.join(files) + '\n')
+          PY
+          sha256sum yokai_economy_combat_v1.1_patch.zip > yokai_economy_combat_v1.1_patch.zip.sha256
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup_yokai_last_working_2026-06-28
+          path: |
+            backup_yokai_last_working_2026-06-28.zip
+            backup_yokai_last_working_2026-06-28.zip.sha256
+          retention-days: 90
+
+      - name: Upload V1.1 patch artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yokai_economy_combat_v1.1_patch
+          path: |
+            yokai_economy_combat_v1.1_patch.zip
+            yokai_economy_combat_v1.1_patch.zip.sha256
+            patch-files.txt
+          retention-days: 90
