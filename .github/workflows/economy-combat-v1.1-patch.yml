@@ -30,7 +30,9 @@ jobs:
           sha256sum backup_yokai_last_working_2026-06-28.zip > backup_yokai_last_working_2026-06-28.zip.sha256
 
       - name: Apply App.tsx integration
-        run: python tools/apply_economy_combat_v1_1.py
+        run: |
+          python tools/apply_economy_combat_v1_1.py
+          python tools/finalize_economy_combat_v1_1.py
 
       - name: Compile Python
         run: python -m compileall bot backend tools
