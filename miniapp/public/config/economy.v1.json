@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "currency": "RIFT_COINS",
+  "startingGrant": {
+    "riftCoins": 100,
+    "food": {
+      "onigiri_hp_01": 1,
+      "soda_ap_01": 1
+    },
+    "weaponId": "training_katana",
+    "ramenCoupons": 0
+  },
+  "riftTiers": {
+    "purple": { "range": [1, 10], "regular": 10, "boss": 30, "completion": 60, "firstClear": 60 },
+    "green": { "range": [11, 20], "regular": 16, "boss": 48, "completion": 96, "firstClear": 96 },
+    "blue": { "range": [21, 30], "regular": 26, "boss": 78, "completion": 156, "firstClear": 156 },
+    "red": { "range": [31, 40], "regular": 41, "boss": 123, "completion": 246, "firstClear": 246 }
+  },
+  "antiFarm": {
+    "levelGap": [
+      { "maxGap": 5, "coefficient": 1.0 },
+      { "maxGap": 10, "coefficient": 0.75 },
+      { "maxGap": null, "coefficient": 0.5 }
+    ],
+    "sameRiftDailyRepeats": [
+      { "maxRuns": 3, "coefficient": 1.0 },
+      { "maxRuns": 6, "coefficient": 0.85 },
+      { "maxRuns": null, "coefficient": 0.7 }
+    ]
+  },
+  "dailyQuests": [
+    { "id": "daily_yokai_5", "metric": "YOKAI_DEFEATED", "target": 5, "rewardCoins": 50 },
+    { "id": "daily_seal_1", "metric": "SEAL_USED", "target": 1, "rewardCoins": 50 },
+    { "id": "daily_rift_1", "metric": "RIFT_CLEARED", "target": 1, "rewardCoins": 100 }
+  ],
+  "weeklyQuest": {
+    "objectives": [
+      { "id": "weekly_yokai_50", "metric": "YOKAI_DEFEATED", "target": 50 },
+      { "id": "weekly_rift_5", "metric": "RIFT_CLEARED", "target": 5 },
+      { "id": "weekly_food_3", "metric": "DISTINCT_FOOD_USED", "target": 3 }
+    ],
+    "rewardCoins": 500
+  },
+  "starsCatalog": [
+    { "id": "starter_pack_01", "type": "ONE_TIME", "priceXtr": 49 },
+    { "id": "ramen_coupons_3", "type": "CONSUMABLE", "priceXtr": 25 },
+    { "id": "ramen_coupons_10", "type": "CONSUMABLE", "priceXtr": 69 },
+    { "id": "koi_skin_01", "type": "COSMETIC", "priceXtr": 99 },
+    { "id": "hunter_skin_01", "type": "COSMETIC", "priceXtr": 129 },
+    { "id": "home_theme_01", "type": "COSMETIC", "priceXtr": 149 },
+    { "id": "preset_slot_01", "type": "UTILITY", "priceXtr": 39 },
+    { "id": "season_pass_s01", "type": "SEASON_PASS", "priceXtr": 299 },
+    { "id": "koi_club_30d", "type": "SUBSCRIPTION", "priceXtr": 199, "subscriptionPeriodSeconds": 2592000 }
+  ]
+}
