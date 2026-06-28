@@ -9,6 +9,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: economy-combat-v1.1-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
