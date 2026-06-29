@@ -1,0 +1,136 @@
+name: Economy Combat V1.1 Patch
+
+on:
+  push:
+    branches:
+      - feature/economy-combat-v1.1
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: economy-combat-v1.1-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/economy-combat-v1.1
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Create immutable pre-patch backup
+        shell: bash
+        run: |
+          git fetch origin main
+          git archive --format=zip --output=backup_yokai_last_working_2026-06-28.zip origin/main
+          sha256sum backup_yokai_last_working_2026-06-28.zip > backup_yokai_last_working_2026-06-28.zip.sha256
+
+      - name: Materialize App.tsx V1.1 runtime
+        run: python tools/materialize_economy_combat_v1_1.py
+
+      - name: Compile Python
+        run: python -m compileall bot backend tools
+
+      - name: Run V1.1 domain tests
+        run: |
+          python -m pip install pytest
+          python -m pytest backend/tests/test_economy_v1_1.py -q
+
+      - name: Normalize npm lock registry
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('miniapp/package-lock.json')
+          content = path.read_text(encoding='utf-8')
+          private_prefix = 'https://packages.applied-caas-gateway1.internal.api.openai.org/artifactory/api/npm/npm-public/'
+          public_prefix = 'https://registry.npmjs.org/'
+          updated = content.replace(private_prefix, public_prefix)
+          if updated == content:
+              print('package-lock registry already normalized')
+          else:
+              path.write_text(updated, encoding='utf-8')
+              print('package-lock registry normalized')
+          PY
+
+      - name: Install frontend dependencies
+        working-directory: miniapp
+        run: npm ci --no-audit --no-fund
+
+      - name: Build frontend
+        working-directory: miniapp
+        run: npm run build
+
+      - name: Typecheck frontend
+        working-directory: miniapp
+        run: npx tsc --noEmit
+
+      - name: Commit normalized lockfile
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          if git diff --quiet -- miniapp/package-lock.json; then
+            echo "Lockfile already normalized"
+          else
+            git config user.name "yokai-v1.1-bot"
+            git config user.email "actions@github.com"
+            git add miniapp/package-lock.json
+            git commit -m "chore: normalize npm registry URLs [skip ci]"
+            git pull --rebase origin feature/economy-combat-v1.1
+            git push origin HEAD:feature/economy-combat-v1.1
+          fi
+
+      - name: Build patch archive
+        shell: bash
+        run: |
+          git fetch origin main feature/economy-combat-v1.1
+          git diff --name-only origin/main...origin/feature/economy-combat-v1.1 > patch-files.txt
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          files = [line.strip() for line in Path('patch-files.txt').read_text().splitlines() if line.strip()]
+          generated = Path('miniapp/src/AppIntegrated.tsx')
+          with zipfile.ZipFile('yokai_economy_combat_v1.1_patch.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+              for name in files:
+                  path = Path(name)
+                  if path.is_file() and '.github/workflows' not in name:
+                      archive.write(path, name)
+              if generated.is_file():
+                  archive.write(generated, generated.as_posix())
+              archive.writestr('PATCH_FILE_LIST.txt', '\n'.join(files + [generated.as_posix()]) + '\n')
+          PY
+          sha256sum yokai_economy_combat_v1.1_patch.zip > yokai_economy_combat_v1.1_patch.zip.sha256
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup_yokai_last_working_2026-06-28
+          path: |
+            backup_yokai_last_working_2026-06-28.zip
+            backup_yokai_last_working_2026-06-28.zip.sha256
+          retention-days: 90
+
+      - name: Upload V1.1 patch artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yokai_economy_combat_v1.1_patch
+          path: |
+            yokai_economy_combat_v1.1_patch.zip
+            yokai_economy_combat_v1.1_patch.zip.sha256
+            patch-files.txt
+          retention-days: 90

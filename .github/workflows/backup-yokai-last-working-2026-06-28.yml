@@ -1,0 +1,39 @@
+name: Backup Yokai Last Working 2026-06-28
+
+on:
+  push:
+    branches:
+      - feature/economy-combat-v1.1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create exact backup archive from main
+        shell: bash
+        run: |
+          git fetch origin main
+          git archive \
+            --format=zip \
+            --output=backup_yokai_last_working_2026-06-28.zip \
+            origin/main
+          sha256sum backup_yokai_last_working_2026-06-28.zip > backup_yokai_last_working_2026-06-28.zip.sha256
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup_yokai_last_working_2026-06-28
+          path: |
+            backup_yokai_last_working_2026-06-28.zip
+            backup_yokai_last_working_2026-06-28.zip.sha256
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "versions": {
+    "economy": "economy-1.1.0",
+    "combat": "combat-1.1.0",
+    "content": "content-1.1.0"
+  },
+  "resetTimezone": "UTC",
+  "dailyResetAt": "00:00",
+  "rewardPipeline": [
+    "RIFT_OF_DAY",
+    "ANTI_FARM",
+    "EVENT",
+    "FLOOR"
+  ],
+  "settlement": {
+    "COMPLETED": 1.0,
+    "DEFEATED": 1.0,
+    "ABANDONED": 0.5
+  },
+  "riftTiers": {
+    "purple": { "range": [1, 10], "regularOni": 10, "bossOni": 30, "firstClear": 60 },
+    "green": { "range": [11, 20], "regularOni": 16, "bossOni": 48, "firstClear": 96 },
+    "blue": { "range": [21, 30], "regularOni": 26, "bossOni": 78, "firstClear": 156 },
+    "red": { "range": [31, 40], "regularOni": 41, "bossOni": 123, "firstClear": 246 }
+  },
+  "completionBonus": null,
+  "earlyFarm": {
+    "trackingKey": ["playerId", "riftId", "resetPeriod"],
+    "freeAttempts": 3,
+    "penaltyFromAttempt": 4,
+    "penalizedOniRange": [1, 3],
+    "penaltyMultiplier": 0.25,
+    "normalMultiplier": 1.0,
+    "resetOnCompleted": true
+  },
+  "consumables": {
+    "states": ["AVAILABLE", "RESERVED", "CONSUMED", "RELEASED"],
+    "sealTalismanConsumeOn": "ACTIVATION"
+  },
+  "authority": {
+    "result": "SERVER",
+    "pendingCoins": "SERVER",
+    "rewards": "SERVER",
+    "catalogs": "SERVER",
+    "prices": "SERVER"
+  },
+  "starsCatalog": {
+    "source": "SERVER_ONLY"
+  },
+  "weaponCatalog": {
+    "source": "SERVER_CONFIG"
+  }
+}
