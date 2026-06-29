@@ -12,6 +12,16 @@ def main() -> None:
     if "ECONOMY_COMBAT_V1_1_INTEGRATED" not in text:
         raise RuntimeError("base V1.1 integration marker is missing")
 
+    # The rift selection screen still uses the pure preview helper. V1.1 keeps
+    # this helper read-only; omitting its import causes a render-time ReferenceError
+    # and leaves the Mini App on a black screen.
+    if "  calculateRiftReward,\n" not in text:
+        text = text.replace(
+            "  claimWeeklyMetaReward,\n",
+            "  calculateRiftReward,\n  claimWeeklyMetaReward,\n",
+            1,
+        )
+
     if "  getRiftTier,\n" not in text:
         text = text.replace("  getWeaponDefinition,\n", "  getRiftTier,\n  getWeaponDefinition,\n", 1)
 
