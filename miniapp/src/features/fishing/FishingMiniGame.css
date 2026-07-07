@@ -1,0 +1,517 @@
+.fishingScreen {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  color: #f8f3ff;
+  background: #03020a;
+  isolation: isolate;
+  user-select: none;
+}
+
+.fishingVideoBg,
+.fishingBgShade,
+.fishingBgVignette {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.fishingVideoBg {
+  object-fit: cover;
+  object-position: center center;
+  z-index: 0;
+  transform: translateZ(0);
+  background: #03020a;
+}
+
+.fishingBgShade {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(3, 2, 10, 0.58) 0%, rgba(3, 2, 10, 0.12) 38%, rgba(3, 2, 10, 0.18) 100%),
+    radial-gradient(circle at 46% 48%, rgba(40, 208, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 86% 58%, rgba(255, 45, 201, 0.16), transparent 26%);
+  pointer-events: none;
+}
+
+.fishingBgVignette {
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(1, 0, 6, 0.55), transparent 24%, rgba(1, 0, 6, 0.72)),
+    radial-gradient(circle at 50% 50%, transparent 45%, rgba(2, 0, 10, 0.82) 100%);
+  pointer-events: none;
+}
+
+.fishingTopBar,
+.fishingHudLeft,
+.fishingPlayfield,
+.fishingSyncPanel,
+.fishingStatusCopy,
+.fishingHoldButton {
+  position: absolute;
+  z-index: 5;
+}
+
+.fishingTopBar {
+  top: max(20px, env(safe-area-inset-top));
+  left: 28px;
+  right: 28px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  pointer-events: none;
+}
+
+.fishingTopBar small,
+.fishingStatusCopy small,
+.fishingInfoCard span,
+.fishingSyncPanel span {
+  display: block;
+  color: #d079ff;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-shadow: 0 0 16px rgba(211, 63, 255, 0.7);
+}
+
+.fishingTopBar strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 22px rgba(63, 221, 255, 0.68);
+}
+
+.fishingTopControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.fishingTopControls span,
+.fishingTopControls button {
+  min-width: 54px;
+  min-height: 54px;
+  border: 1px solid rgba(131, 89, 255, 0.58);
+  border-radius: 16px;
+  color: #f7edff;
+  background: rgba(9, 4, 25, 0.74);
+  box-shadow: inset 0 0 24px rgba(140, 51, 255, 0.16), 0 0 28px rgba(106, 44, 255, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.fishingTopControls span {
+  display: grid;
+  place-items: center;
+  padding: 0 14px;
+  color: #66f3ff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.fishingTopControls button {
+  font-size: 24px;
+}
+
+.fishingHudLeft {
+  left: 28px;
+  top: 92px;
+  bottom: 48px;
+  width: min(300px, 22vw);
+  display: grid;
+  grid-template-rows: 1fr 0.82fr 0.82fr 1.5fr;
+  gap: 18px;
+}
+
+.fishingInfoCard {
+  position: relative;
+  overflow: hidden;
+  padding: 24px 26px;
+  border: 1px solid rgba(150, 82, 255, 0.72);
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  background: linear-gradient(135deg, rgba(11, 5, 28, 0.88), rgba(9, 4, 21, 0.58));
+  box-shadow: inset 0 0 28px rgba(81, 39, 177, 0.2), 0 0 28px rgba(83, 28, 190, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+.fishingInfoCard p {
+  margin: 16px 0 10px;
+  font-size: clamp(16px, 1.55vw, 24px);
+  line-height: 1.35;
+  color: #fff;
+}
+
+.fishingFishIconSvg {
+  width: 82px;
+  height: auto;
+  fill: none;
+  stroke: #58eaff;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 10px rgba(67, 227, 255, 0.82));
+}
+
+.fishingCatchRow {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.fishingCatchRow b {
+  color: #e176ff;
+  font-size: 42px;
+  text-shadow: 0 0 18px rgba(212, 64, 255, 0.9);
+}
+
+.fishingGearLine {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.fishingGearLine i {
+  color: #6cf2ff;
+  font-size: 38px;
+  font-style: normal;
+  text-shadow: 0 0 16px rgba(82, 235, 255, 0.8);
+}
+
+.fishingGearLine p,
+.fishingHintCard p {
+  margin: 0;
+  font-size: 18px;
+}
+
+.fishingGearBar {
+  position: relative;
+  width: 142px;
+  height: 10px;
+  margin: 14px 0 0 50px;
+  border-radius: 999px;
+  border: 1px solid rgba(167, 118, 255, 0.6);
+  background: rgba(10, 5, 26, 0.9);
+  overflow: hidden;
+}
+
+.fishingGearBar i {
+  display: block;
+  width: 48%;
+  height: 100%;
+  background: linear-gradient(90deg, #3df4ff, #e441ff);
+  box-shadow: 0 0 14px rgba(68, 234, 255, 0.8);
+}
+
+.fishingKitsuneMark {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  font-size: 78px;
+  color: rgba(191, 78, 255, 0.16);
+  text-shadow: 0 0 25px rgba(205, 73, 255, 0.55);
+}
+
+.fishingPlayfield {
+  top: 44px;
+  bottom: 42px;
+  left: clamp(330px, 24vw, 420px);
+  width: min(270px, 20vw);
+}
+
+.fishingPlayfieldFrame {
+  position: relative;
+  height: 100%;
+  border: 2px solid rgba(48, 214, 255, 0.92);
+  border-radius: 6px;
+  background:
+    linear-gradient(rgba(82, 232, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(82, 232, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(39, 14, 108, 0.45), rgba(8, 5, 26, 0.68));
+  background-size: 38px 38px;
+  box-shadow: inset 0 0 35px rgba(104, 68, 255, 0.28), 0 0 32px rgba(43, 207, 255, 0.4);
+  overflow: hidden;
+}
+
+.fishingPlayfieldFrame::before,
+.fishingPlayfieldFrame::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(219, 91, 255, 0.42), transparent);
+}
+
+.fishingPlayfieldFrame::before { top: 28%; }
+.fishingPlayfieldFrame::after { bottom: 25%; }
+
+.fishingToriiMark {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(212, 92, 255, 0.35);
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  writing-mode: vertical-rl;
+}
+
+.fishingFishMarker {
+  position: absolute;
+  left: 48%;
+  transform: translate(-50%, -50%);
+  transition: top 220ms ease-out;
+}
+
+.fishingFishMarker .fishingFishIconSvg {
+  width: 76px;
+  stroke: #58eaff;
+  filter: drop-shadow(0 0 16px rgba(76, 239, 255, 1));
+}
+
+.fishingCatchZone {
+  position: absolute;
+  left: 50%;
+  width: 58%;
+  height: 28%;
+  min-height: 130px;
+  transform: translateX(-50%);
+  border: 2px solid rgba(34, 255, 198, 0.9);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(65, 255, 211, 0.35), rgba(50, 205, 176, 0.2));
+  box-shadow: inset 0 0 28px rgba(62, 255, 215, 0.18), 0 0 32px rgba(44, 255, 205, 0.46);
+  display: grid;
+  place-items: center;
+  transition: bottom 220ms ease-out;
+}
+
+.fishingCatchZone span {
+  color: rgba(37, 255, 209, 0.55);
+  font-size: 48px;
+  font-weight: 900;
+}
+
+.fishingSyncPanel {
+  left: clamp(620px, 46vw, 760px);
+  top: 96px;
+  width: 180px;
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.fishingSyncPanel strong {
+  color: #64efff;
+  font-size: 42px;
+  text-shadow: 0 0 20px rgba(76, 234, 255, 0.9);
+}
+
+.fishingSyncTube {
+  position: relative;
+  width: 42px;
+  height: min(52vh, 560px);
+  border: 2px solid rgba(225, 78, 255, 0.68);
+  border-radius: 999px;
+  background: rgba(10, 3, 26, 0.78);
+  overflow: hidden;
+  box-shadow: inset 0 0 22px rgba(153, 51, 255, 0.2), 0 0 22px rgba(209, 65, 255, 0.22);
+}
+
+.fishingSyncTube i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ed36ff, #a64dff 62%, #52eaff);
+  box-shadow: 0 0 18px rgba(236, 61, 255, 0.9);
+  transition: height 220ms ease-out;
+}
+
+.fishingStatusCopy {
+  left: clamp(690px, 52vw, 880px);
+  top: 38%;
+  width: min(430px, 32vw);
+  padding: 20px 22px;
+  color: rgba(255, 255, 255, 0.86);
+  text-shadow: 0 0 20px rgba(2, 0, 8, 0.8);
+}
+
+.fishingStatusCopy h1 {
+  margin: 10px 0 14px;
+  color: #fff;
+  font-size: clamp(28px, 3vw, 56px);
+  line-height: 1;
+}
+
+.fishingStatusCopy p {
+  margin: 0;
+  max-width: 360px;
+  font-size: clamp(15px, 1.25vw, 20px);
+  line-height: 1.42;
+}
+
+.fishingHoldButton {
+  right: 34px;
+  bottom: max(34px, env(safe-area-inset-bottom));
+  width: min(390px, 28vw);
+  min-height: 96px;
+  padding: 18px 24px;
+  border: 1px solid rgba(235, 61, 255, 0.8);
+  clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%, 26px 50%);
+  background: linear-gradient(100deg, rgba(15, 141, 181, 0.88), rgba(116, 52, 209, 0.92) 48%, rgba(220, 48, 180, 0.9));
+  box-shadow: 0 0 32px rgba(201, 55, 255, 0.45), inset 0 0 18px rgba(255, 255, 255, 0.08);
+  text-align: left;
+}
+
+.fishingHoldButton strong {
+  display: block;
+  color: #fefeff;
+  font-size: clamp(24px, 2.3vw, 42px);
+  line-height: 0.95;
+  text-shadow: 0 0 18px rgba(62, 237, 255, 0.85);
+}
+
+.fishingHoldButton small {
+  display: block;
+  margin-top: 8px;
+  color: #f1d6ff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.17em;
+  text-align: right;
+}
+
+.fishingHoldButton.isHolding {
+  filter: brightness(1.22) saturate(1.1);
+  box-shadow: 0 0 48px rgba(82, 239, 255, 0.55), inset 0 0 28px rgba(255, 255, 255, 0.16);
+}
+
+@media (max-width: 900px), (orientation: portrait) {
+  .fishingTopBar {
+    left: 14px;
+    right: 14px;
+    top: max(10px, env(safe-area-inset-top));
+  }
+
+  .fishingTopBar strong {
+    font-size: 18px;
+  }
+
+  .fishingTopControls span {
+    display: none;
+  }
+
+  .fishingTopControls button {
+    min-width: 42px;
+    min-height: 42px;
+    font-size: 18px;
+  }
+
+  .fishingHudLeft {
+    left: 12px;
+    top: 76px;
+    bottom: auto;
+    width: 31vw;
+    max-width: 170px;
+    grid-template-rows: repeat(4, auto);
+    gap: 8px;
+  }
+
+  .fishingInfoCard {
+    padding: 12px 13px;
+  }
+
+  .fishingInfoCard span,
+  .fishingSyncPanel span,
+  .fishingStatusCopy small {
+    font-size: 9px;
+  }
+
+  .fishingInfoCard p,
+  .fishingGearLine p,
+  .fishingHintCard p {
+    font-size: 11px;
+  }
+
+  .fishingFishIconSvg {
+    width: 44px;
+  }
+
+  .fishingCatchRow b {
+    font-size: 25px;
+  }
+
+  .fishingGearBar {
+    width: 82px;
+    margin-left: 34px;
+  }
+
+  .fishingKitsuneMark {
+    display: none;
+  }
+
+  .fishingPlayfield {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 84px;
+    bottom: 126px;
+    width: min(38vw, 210px);
+  }
+
+  .fishingSyncPanel {
+    left: auto;
+    right: 14px;
+    top: 84px;
+    width: 76px;
+    align-items: center;
+  }
+
+  .fishingSyncPanel strong {
+    font-size: 26px;
+  }
+
+  .fishingSyncTube {
+    width: 28px;
+    height: 42vh;
+  }
+
+  .fishingStatusCopy {
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;
+    bottom: 112px;
+    width: min(86vw, 420px);
+    padding: 0;
+    text-align: center;
+  }
+
+  .fishingStatusCopy h1 {
+    font-size: 26px;
+    margin: 4px 0 6px;
+  }
+
+  .fishingStatusCopy p {
+    margin: 0 auto;
+    font-size: 12px;
+  }
+
+  .fishingHoldButton {
+    left: 14px;
+    right: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: auto;
+    min-height: 82px;
+  }
+
+  .fishingHoldButton strong {
+    font-size: 28px;
+  }
+}
